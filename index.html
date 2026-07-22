@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoldTachka Logistics | Элитные грузоперевозки</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#0046AE',
+                            yellow: '#FFD200',
+                            red: '#CC092F',
+                            dark: '#111827',
+                            light: '#F3F4F6'
+                        }
+                    },
+                    boxShadow: {
+                        'premium': '0 10px 40px -10px rgba(0,0,0,0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html { scroll-behavior: smooth; }
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(0, 70, 174, 0.9) 0%, rgba(17, 24, 39, 0.95) 100%), url('https://images.unsplash.com/photo-1586528116311-ad8ed7c663be?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        .vehicle-card {
+            transition: all 0.3s ease;
+        }
+        .vehicle-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px -5px rgba(0,0,0,0.15);
+        }
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(90deg, #FFD200, #ffaa00);
+        }
+        
+        /* Modal Styles */
+        #order-modal, #contract-modal {
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        #order-modal.active, #contract-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            transform: scale(0.95);
+            transition: all 0.3s ease;
+        }
+        #order-modal.active .modal-content, #contract-modal.active .modal-content {
+            transform: scale(1);
+        }
+        
+        /* Custom scrollbar for contract */
+        .contract-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .contract-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 4px;
+        }
+        .contract-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .contract-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 bg-gray-50 overflow-x-hidden">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 flex items-center cursor-pointer">
+                    <i class="fa-solid fa-dolly text-brand-blue text-3xl mr-3"></i>
+                    <span class="font-extrabold text-2xl tracking-tight text-brand-dark">Mold<span class="text-brand-blue">Tachka</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#about" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">О нас</a>
+                    <a href="#fleet" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">Наш Транспорт</a>
+                    <a href="#advantages" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">Преимущества</a>
+                    <button onclick="openModal()" class="bg-brand-blue hover:bg-blue-700 text-white px-6 py-2.5 rounded-full font-semibold transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                        Вызвать транспорт
+                    </button>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button class="text-gray-600 hover:text-gray-900 focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient min-h-screen flex items-center pt-20 relative">
+        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <div class="text-center max-w-4xl mx-auto">
+                <div class="inline-block px-4 py-1.5 rounded-full bg-brand-yellow/20 border border-brand-yellow/50 text-brand-yellow font-medium text-sm mb-6 backdrop-blur-sm">
+                    №1 Инновационная Логистика в Молдове
+                </div>
+                <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight">
+                    Доставим ваш груз. <br />
+                    <span class="text-gradient">Своими руками.</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-10 font-light max-w-2xl mx-auto">
+                    Забудьте о фурах и Газелях. Наша компания использует передовые мускульные технологии для доставки грузов любой сложности. Надежно, экологично и без пробок.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <button onclick="openModal()" class="bg-brand-yellow hover:bg-yellow-400 text-brand-dark px-8 py-4 rounded-full font-bold text-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                        Оформить накладную
+                    </button>
+                    <a href="#fleet" class="bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/30 px-8 py-4 rounded-full font-semibold text-lg transition-all">
+                        Изучить автопарк
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Decorative wave bottom -->
+        <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
+            <svg class="relative block w-full h-16" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118.08,130.83,119.26,192.39,101.45,235.15,88.94,278.36,73.5,321.39,56.44Z" class="fill-gray-50"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Fleet Section (Автопарк) -->
+    <section id="fleet" class="py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold text-brand-dark mb-4">Наш высокотехнологичный автопарк</h2>
+                <div class="w-24 h-1.5 bg-brand-blue mx-auto rounded-full mb-6"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Каждая единица техники проходит ежедневное ТО (смазка колес салом) и управляется сертифицированным оператором (дядей Ваней).</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Vehicle 1 -->
+                <div class="vehicle-card bg-white rounded-3xl p-8 border border-gray-100 shadow-premium relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 bg-brand-blue text-white px-4 py-1 rounded-bl-xl font-bold text-sm">
+                        Эконом
+                    </div>
+                    <div class="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-10 h-10 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Тачка "Классика"</h3>
+                    <p class="text-brand-blue font-semibold mb-4 text-sm uppercase tracking-wide">На надувных колесах</p>
+                    
+                    <ul class="space-y-3 mb-8 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-weight-hanging mt-1 mr-3 text-brand-yellow"></i>
+                            <span>Грузоподъемность: <strong>50-70 кг</strong></span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-road mt-1 mr-3 text-brand-yellow"></i>
+                            <span>Амортизация: Мягкий ход по кочкам</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-sack-xmark mt-1 mr-3 text-brand-yellow"></i>
+                            <span>Идеально для: Мешок картошки, цемента</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-auto border-t border-gray-100 pt-6 flex items-center justify-between">
+                        <div>
+                            <span class="text-3xl font-extrabold text-gray-900">20₽</span>
+                            <span class="text-sm text-gray-500">/ в один конец</span>
+                        </div>
+                        <button onclick="openModal('Классика (20р)')" class="bg-gray-900 hover:bg-brand-blue text-white w-12 h-12 rounded-full flex items-center justify-center transition-colors">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Vehicle 2 -->
+                <div class="vehicle-card bg-white rounded-3xl p-8 border-2 border-brand-yellow shadow-premium relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 bg-brand-yellow text-brand-dark px-4 py-1 rounded-bl-xl font-bold text-sm">
+                        Популярный выбор
+                    </div>
+                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-yellow-50 rounded-full blur-3xl opacity-50 z-0"></div>
+                    
+                    <div class="w-20 h-20 bg-yellow-50 rounded-2xl flex items-center justify-center mb-6 relative z-10 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-truck-pickup text-4xl text-brand-yellow"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2 relative z-10">Тачка "Профи"</h3>
+                    <p class="text-brand-yellow font-semibold mb-4 text-sm uppercase tracking-wide relative z-10">Полиуретановые колеса</p>
+                    
+                    <ul class="space-y-3 mb-8 text-gray-600 relative z-10">
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-weight-hanging mt-1 mr-3 text-brand-yellow"></i>
+                            <span>Грузоподъемность: <strong>до 100 кг</strong></span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-shield-halved mt-1 mr-3 text-brand-yellow"></i>
+                            <span>Броня: Не боится гвоздей и стекла</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-boxes-stacked mt-1 mr-3 text-brand-yellow"></i>
+                            <span>Идеально для: Стройматериалы, бытовая техника</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-auto border-t border-gray-100 pt-6 flex items-center justify-between relative z-10">
+                        <div>
+                            <span class="text-3xl font-extrabold text-gray-900">45₽</span>
+                            <span class="text-sm text-gray-500">/ в один конец</span>
+                        </div>
+                        <button onclick="openModal('Профи (45р)')" class="bg-brand-yellow hover:bg-yellow-500 text-brand-dark w-12 h-12 rounded-full flex items-center justify-center transition-colors shadow-md">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Vehicle 3 -->
+                <div class="vehicle-card bg-gray-900 rounded-3xl p-8 border border-gray-800 shadow-premium relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 bg-brand-red text-white px-4 py-1 rounded-bl-xl font-bold text-sm">
+                        Тяжеловес
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-gray-800 to-black opacity-50"></div>
+                    
+                    <div class="w-20 h-20 bg-gray-800 rounded-2xl flex items-center justify-center mb-6 relative z-10 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-dolly text-4xl text-brand-red"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-2 relative z-10">Рохля "Титан"</h3>
+                    <p class="text-brand-red font-semibold mb-4 text-sm uppercase tracking-wide relative z-10">Промышленный класс</p>
+                    
+                    <ul class="space-y-3 mb-8 text-gray-400 relative z-10">
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-weight-hanging mt-1 mr-3 text-brand-red"></i>
+                            <span>Грузоподъемность: <strong>до 2 тонн</strong></span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-pallet mt-1 mr-3 text-brand-red"></i>
+                            <span>Формат: Под европаллеты</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-gears mt-1 mr-3 text-brand-red"></i>
+                            <span>Особенность: Гидравлический подъемник</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-auto border-t border-gray-700 pt-6 flex items-center justify-between relative z-10">
+                        <div>
+                            <span class="text-3xl font-extrabold text-white">55₽</span>
+                            <span class="text-sm text-gray-400">/ в один конец</span>
+                        </div>
+                        <button onclick="openModal('Рохля Титан (55р)')" class="bg-brand-red hover:bg-red-700 text-white w-12 h-12 rounded-full flex items-center justify-center transition-colors shadow-lg">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Advantages -->
+    <section id="advantages" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <div class="lg:w-1/2">
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl">
+                        <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Логистика" class="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                            <div class="p-8">
+                                <p class="text-white font-bold text-xl">100% Экологично</p>
+                                <p class="text-gray-200">Никаких выхлопных газов, только пот.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:w-1/2">
+                    <h2 class="text-4xl font-extrabold text-gray-900 mb-6">Почему выбирают нас, а не фуры?</h2>
+                    <p class="text-lg text-gray-600 mb-8">
+                        Мы переосмыслили городскую логистику. В то время как грузовики стоят в пробках, наш автопарк свободно перемещается по тротуарам, дворам и газонам (если никто не видит).
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-100 text-brand-blue">
+                                    <i class="fa-solid fa-ban text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-bold text-gray-900">Неуязвимость к пробкам</h4>
+                                <p class="mt-1 text-gray-600">Нашим операторам не нужны светофоры. Мы доставим груз даже в час-пик, протискиваясь между машинами.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-yellow-100 text-yellow-600">
+                                    <i class="fa-solid fa-leaf text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-bold text-gray-900">Двигатель на мамалыге</h4>
+                                <p class="mt-1 text-gray-600">Наш транспорт работает на возобновляемом топливе (обед оператора). Никакого вреда озоновому слою!</p>
+                            </div>
+                        </div>
+
+                        <div class="flex">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-red-100 text-brand-red">
+                                    <i class="fa-solid fa-handshake-angle text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-bold text-gray-900">Индивидуальный подход</h4>
+                                <p class="mt-1 text-gray-600">Ваш груз будет бережно уложен в тачку и укрыт старой курткой в случае дождя. Сервис премиум класса.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 pt-16 pb-8 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-6 md:mb-0">
+                    <i class="fa-solid fa-dolly text-brand-yellow text-3xl mr-3"></i>
+                    <span class="font-extrabold text-2xl tracking-tight text-white">Mold<span class="text-brand-yellow">Tachka</span></span>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-telegram text-2xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-whatsapp text-2xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-viber text-2xl"></i></a>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                <p>&copy; 2026 MoldTachka Logistics. Все права защищены. Ни одна тачка не пострадала при создании сайта.</p>
+                <p class="mt-2 md:mt-0">Сделано с юмором в Молдове 🇲🇩</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Order Modal -->
+    <div id="order-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/60 p-4">
+        <div class="modal-content bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden relative">
+            
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center transition-colors z-20">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div class="p-8">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Вызов транспорта</h3>
+                <p class="text-gray-500 mb-6 text-sm">Оператор выкатывает тачку со склада. Заполните данные.</p>
+                
+                <form onsubmit="submitForm(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Ваше имя</label>
+                        <input type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-all" placeholder="Иван">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Телефон</label>
+                        <input type="tel" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-all" placeholder="+373 XXX XX XXX">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Выбор транспорта</label>
+                        <select id="vehicle-select" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-all appearance-none bg-white">
+                            <option value="Классика">Тачка "Классика" (надувные) — 20р</option>
+                            <option value="Профи">Тачка "Профи" (полиуретан) — 45р</option>
+                            <option value="Рохля">Рохля "Титан" (до 2т) — 55р</option>
+                        </select>
+                    </div>
+
+                    <!-- New Checkboxes Start -->
+                    <div class="pt-2 pb-2 space-y-3">
+                        <label class="flex items-start cursor-pointer group">
+                            <div class="flex items-center h-5">
+                                <input type="checkbox" required class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-brand-blue accent-brand-blue">
+                            </div>
+                            <span class="ml-2 text-xs text-gray-600 group-hover:text-gray-900 transition-colors">
+                                Я даю согласие на <span class="font-semibold">обработку персональных данных</span>.
+                            </span>
+                        </label>
+                        
+                        <label class="flex items-start cursor-pointer group">
+                            <div class="flex items-center h-5">
+                                <input type="checkbox" required class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-brand-blue accent-brand-blue">
+                            </div>
+                            <span class="ml-2 text-xs text-gray-600">
+                                Я прочитал(а) и полностью принимаю <button type="button" onclick="openContract()" class="font-bold text-brand-blue hover:text-blue-800 underline transition-colors">Договор оферты</button>.
+                            </span>
+                        </label>
+                    </div>
+                    <!-- New Checkboxes End -->
+
+                    <div class="pt-2">
+                        <button type="submit" class="w-full bg-brand-blue hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-colors shadow-lg flex items-center justify-center">
+                            <i class="fa-solid fa-check-circle mr-2"></i> Подтвердить заказ
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="success-message" class="hidden absolute inset-0 bg-white p-8 flex flex-col items-center justify-center text-center z-10">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-check text-3xl text-green-500"></i>
+                    </div>
+                    <h4 class="text-2xl font-bold text-gray-900 mb-2">Заявка принята!</h4>
+                    <p class="text-gray-600 mb-6">Дядя Ваня уже смазывает колеса и скоро выезжает к вам.</p>
+                    <button onclick="closeModal()" class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-lg transition-colors">
+                        Закрыть
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contract Modal (New) -->
+    <div id="contract-modal" class="fixed inset-0 z-[110] flex items-center justify-center bg-gray-900/80 p-4 md:p-8">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-2xl h-[80vh] flex flex-col relative">
+            
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-2xl">
+                <h3 class="text-xl font-bold text-gray-900">Договор публичной оферты</h3>
+                <button onclick="closeContract()" class="text-gray-400 hover:text-brand-red transition-colors">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+            </div>
+            
+            <!-- Scrollable content -->
+            <div class="p-6 overflow-y-auto contract-scroll flex-grow text-sm text-gray-700 space-y-4">
+                <p class="font-bold">Нажимая галочку в форме заказа, вы автоматически соглашаетесь со следующими пунктами (отказаться нельзя, мы проверяли):</p>
+                
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                    <h4 class="font-bold text-brand-blue mb-1">1. Форс-мажорные и атмосферные обстоятельства</h4>
+                    <p>Компания не несет никакой ответственности за порчу, намокание или выцветание груза вследствие погодных явлений (дождь, снег, град, падение метеорита, вторжение инопланетян). Ваш груз будет заботливо укрыт старой курткой оператора (дяди Вани), степень водонепроницаемости которой не сертифицирована с 1998 года. Претензии не принимаются.</p>
+                </div>
+
+                <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
+                    <h4 class="font-bold text-yellow-700 mb-1">2. Технические неисправности "Классики"</h4>
+                    <p>В случае пробития надувного колеса (Тачка "Классика" за 20р), клиент обязуется обеспечить моральную поддержку оператора, пока тот клеит заплатку слюной и подорожником. Время доставки автоматически увеличивается на неопределенный срок. Возврат средств не предусмотрен, так как процесс ремонта считается бесплатным мастер-классом.</p>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h4 class="font-bold text-gray-900 mb-1">3. Амортизация и реорганизация груза</h4>
+                    <p>Компания освобождается от ответственности за тряску груза. Если ваш хрустальный сервиз доехал в виде пазла из 500 деталей, это считается "услугой по реорганизации структуры груза", вызванной концептуальными неровностями молдавских тротуаров. Сборка пазла в стоимость не входит.</p>
+                </div>
+
+                <div class="bg-red-50 p-4 rounded-lg border border-red-100">
+                    <h4 class="font-bold text-brand-red mb-1">4. Биологический фактор</h4>
+                    <p>Если в процессе доставки на тачку (или на груз) нагадила птица, это безоговорочно расценивается как знак свыше на грядущее богатство клиента. Претензии по данному факту не принимаются, услуга автомойки груза не предоставляется.</p>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h4 class="font-bold text-gray-900 mb-1">5. Навигация и Маршрутизация</h4>
+                    <p>Маршрут строится оператором интуитивно, по памяти, звездам и запаху свежей выпечки из ближайшей плациндочной. Если тачка свернула не туда или заехала в соседнее село, значит, так было нужно для поддержания баланса Вселенной. Клиент обязан проявить терпение.</p>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h4 class="font-bold text-gray-900 mb-1">6. Аудио-сопровождение (Тачка "Профи")</h4>
+                    <p>При заказе тачки на полиуретановых колесах, характерный грохот пластмассы по брусчатке, из-за которого срабатывают сигнализации у припаркованных машин, является нашим фирменным бесплатным аудио-сопровождением. Жалобы на шум отклоняются, так как это звук надвигающегося к вам успеха.</p>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h4 class="font-bold text-gray-900 mb-1">7. Перегруз Рохли</h4>
+                    <p>Если клиент обманул с весом (более 2 тонн) и оператор надорвал спину, клиент юридически обязан за свой счет приобрести оператору мазь от радикулита и поставить свечку за его здоровье в ближайшем храме. Чек за свечку необходимо прикрепить к накладной.</p>
+                </div>
+            </div>
+            
+            <div class="p-6 border-t border-gray-100 bg-white rounded-b-2xl flex justify-end">
+                <button onclick="closeContract()" class="bg-brand-blue hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl transition-colors">
+                    Я всё понял, согласен
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('order-modal');
+        const contractModal = document.getElementById('contract-modal');
+        const select = document.getElementById('vehicle-select');
+        const form = document.querySelector('form');
+        const successMessage = document.getElementById('success-message');
+
+        // Main Order Modal logic
+        function openModal(vehicleName = '') {
+            modal.classList.add('active');
+            form.style.display = 'block';
+            successMessage.classList.add('hidden');
+            
+            if(vehicleName) {
+                if(vehicleName.includes('Классика')) select.value = 'Классика';
+                if(vehicleName.includes('Профи')) select.value = 'Профи';
+                if(vehicleName.includes('Рохля')) select.value = 'Рохля';
+            }
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                form.reset();
+            }, 300);
+        }
+
+        // Contract Modal logic
+        function openContract() {
+            contractModal.classList.add('active');
+        }
+
+        function closeContract() {
+            contractModal.classList.remove('active');
+        }
+
+        // Close modals when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+        
+        contractModal.addEventListener('click', (e) => {
+            if (e.target === contractModal) {
+                closeContract();
+            }
+        });
+
+        // Form Submission
+        function submitForm(e) {
+            e.preventDefault();
+            form.style.display = 'none';
+            successMessage.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
+
+
